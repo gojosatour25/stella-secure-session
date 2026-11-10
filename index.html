@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080609" />
+  <title>STELLA // Secure Session</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080609;--panel:#100b10;--line:#37242b;--red:#ff4059;--red2:#bd1e3d;--amber:#e6aa68;--green:#8dc6a1;--muted:#82777f;--text:#ebe4e7}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;overflow:hidden;background:radial-gradient(ellipse at 48% 40%,#241018 0,#0c090d 52%,#050508 100%);color:var(--text);font:12px/1.5 "Segoe UI",system-ui,sans-serif}
+    .shell{height:100vh;min-height:540px;padding:clamp(12px,1.8vw,25px);display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:12px;max-width:1600px;margin:auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 0 12px;border-bottom:1px solid #702b3a55}.brand{display:flex;align-items:center;gap:10px}.seal{width:31px;height:31px;border:1px solid #a84458;border-radius:50%;display:grid;place-items:center;color:#f394a2;font:700 13px sans-serif;box-shadow:0 0 18px #da244126}.brand strong{display:block;font-size:10px;letter-spacing:2.5px}.brand small{display:block;margin-top:3px;color:#8b7580;font-size:7px;letter-spacing:1.5px}.top-status{display:flex;align-items:center;gap:8px;color:#d98995;font:600 8px ui-monospace,Consolas,monospace;letter-spacing:1.2px}.led{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:alarm 1.2s infinite}
+    .alertbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 13px;border:1px solid #a52d43;background:linear-gradient(90deg,#290d16,#150a0e 65%,#1d0c12);box-shadow:0 0 21px #e2283b16,inset 3px 0 var(--red)}.alert-title{display:flex;align-items:center;gap:9px;font-size:8px;letter-spacing:1.4px}.alert-title b{color:#ff8794;font-weight:700}.alert-icon{display:grid;place-items:center;width:17px;height:17px;border:1px solid #d64558;border-radius:50%;color:#ff7888;font-weight:700}.meta{display:flex;gap:16px;color:#9a818a;font:8px ui-monospace,Consolas,monospace}.meta strong{color:#ded0d5;font-weight:500}
+    main{min-height:0;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,.78fr);gap:12px}.panel{position:relative;min-height:0;border:1px solid var(--line);background:linear-gradient(145deg,#110c11f2,#09080bf7);box-shadow:0 14px 50px #0007}.panel:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,#ff405908,transparent 28% 74%,#ff405904)}
+    .terminal{display:flex;flex-direction:column}.panelhead{height:39px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid #34232a;color:#a99098;font:7px ui-monospace,Consolas,monospace;letter-spacing:1.4px}.live{color:#ff687a}.live:before{content:"";display:inline-block;width:5px;height:5px;margin-right:6px;border-radius:50%;background:var(--red);box-shadow:0 0 7px var(--red)}.log{flex:1;overflow:auto;padding:14px 13px 10px;font:clamp(9px,.92vw,11px)/1.85 ui-monospace,"Cascadia Code",Consolas,monospace;scrollbar-color:#5b2a35 #0d090c}.line{display:grid;grid-template-columns:82px 13px 1fr;gap:6px;opacity:0;transform:translateY(3px);animation:linein .2s ease forwards}.time{color:#73636a}.sig{color:#d36d7b}.msg{color:#c5b6bb}.line.good .sig,.line.good .msg{color:#a8c8af}.line.warn .sig,.line.warn .msg{color:#ff7887}.line.alert .sig,.line.alert .msg{color:#f3ad68}.cursor{display:inline-block;width:6px;height:12px;margin-left:3px;vertical-align:-2px;background:var(--red);animation:alarm .8s steps(2) infinite}
+    .side{display:grid;grid-template-rows:1fr 1fr auto;gap:12px}.card{padding:13px}.label{color:#927c84;font-size:7px;letter-spacing:1.4px}.value{margin:12px 0 4px;color:#f0e4e7;font:500 clamp(18px,2.4vw,27px) ui-monospace,Consolas,monospace;letter-spacing:.8px}.sub{color:#81747c;font-size:8px}.meter{height:3px;margin-top:14px;background:#2a2025;overflow:hidden}.meter i{display:block;width:0;height:100%;background:linear-gradient(90deg,#a71532,#ff5369);box-shadow:0 0 10px #ff455c;transition:width .4s}.ringwrap{display:flex;justify-content:center;align-items:center;min-height:90px}.ring{width:83px;aspect-ratio:1;border:1px solid #a2394b;border-radius:50%;display:grid;place-items:center;position:relative;box-shadow:0 0 18px #dd294020,inset 0 0 17px #d62c3e1c}.ring:before,.ring:after{content:"";position:absolute;inset:7px;border:1px dashed #76404b;border-radius:50%;animation:spin 15s linear infinite}.ring:after{inset:15px;border-style:solid;border-left-color:transparent;border-bottom-color:transparent;animation-duration:6s;animation-direction:reverse}.ring span{color:#ff7886;font:9px ui-monospace,Consolas,monospace;letter-spacing:.7px}.row{display:flex;justify-content:space-between;gap:6px;padding:7px 0;border-top:1px solid #2b2025;color:#8d7b82;font-size:7px;letter-spacing:.5px}.row b{color:#d6c6cb;font-weight:500}.row b.hot{color:#ff7d8a}
+    .bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#776b72;font:7px ui-monospace,Consolas,monospace;letter-spacing:1px}.progresswrap{display:flex;align-items:center;gap:8px;flex:1;max-width:350px}.progress{height:2px;flex:1;background:#32242a}.progress i{display:block;width:0;height:100%;background:var(--red);box-shadow:0 0 8px var(--red);transition:width .3s}.terminate{border:1px solid #5f3039;background:#11090d;color:#bd8b94;padding:6px 9px;font:7px ui-monospace,Consolas,monospace;letter-spacing:.8px;cursor:pointer}.terminate:hover{border-color:#db4a5f;color:#ffdce0}
+    .scanline{position:fixed;z-index:2;left:0;right:0;top:-10%;height:12%;pointer-events:none;background:linear-gradient(transparent,#ff314312,transparent);animation:scan 7s linear infinite}
+    @keyframes alarm{50%{opacity:.35}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes linein{to{opacity:1;transform:translateY(0)}}@keyframes scan{to{top:110%}}
+    @media(max-width:700px){.shell{padding:10px;gap:8px}.meta{gap:7px;font-size:6px}.alert-title{font-size:7px}.alertbar{padding:8px}.side{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}.side .card:last-child{grid-column:1/-1}.card{padding:9px}.value{margin:7px 0 2px;font-size:17px}.ringwrap{min-height:50px}.ring{width:53px}.ring:before{inset:5px}.ring:after{inset:10px}.row{font-size:6px;padding:5px 0}.panelhead{height:32px}.log{padding:10px 8px}.line{grid-template-columns:57px 9px 1fr;gap:4px;font-size:8px}.bottom{font-size:6px}.terminate{font-size:6px;padding:5px}}
+    @media(max-width:420px){.brand small{font-size:6px}.top-status{font-size:6px}.meta{display:grid;gap:0}.alert-title{letter-spacing:.7px}.line{grid-template-columns:49px 8px 1fr;font-size:7px}.log{font-size:8px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="scanline" aria-hidden="true"></div>
+  <div class="shell">
+    <header>
+      <div class="brand"><div class="seal">S</div><div><strong>STELLA</strong><small>SECURE SYSTEMS CONSOLE</small></div></div>
+      <div class="top-status"><i class="led"></i><span id="top-status">SECURITY EVENT / SESSION ACTIVE</span></div>
+    </header>
+    <section class="alertbar">
+      <div class="alert-title"><span class="alert-icon">!</span><span>REMOTE ENDPOINT <b id="session-status">SESSION ESTABLISHED</b></span></div>
+      <div class="meta"><span>NODE <strong>NODE-04</strong></span><span>PROTO <strong>STL/4.2</strong></span><span>MODE <strong>RESTRICTED</strong></span></div>
+    </section>
+    <main>
+      <section class="panel terminal">
+        <div class="panelhead"><span>ENDPOINT TRACE / EVENT STREAM</span><span class="live">LIVE</span></div>
+        <div class="log" id="log" aria-live="polite"></div>
+      </section>
+      <aside class="side">
+        <section class="panel card"><div class="label">ENDPOINT FINGERPRINT</div><div class="value">WIN-64 / NODE</div><div class="sub">Remote host signature matched</div><div class="meter"><i id="meter"></i></div></section>
+        <section class="panel card"><div class="label">SESSION AUTHORITY</div><div class="ringwrap"><div class="ring"><span id="integrity">VERIFY</span></div></div><div class="row"><span>CHANNEL</span><b class="hot" id="channel">ACTIVE</b></div><div class="row"><span>AUTH STATE</span><b id="auth">VALIDATING</b></div></section>
+        <section class="panel card"><div class="label">OPEN OPERATIONS</div><div class="value" id="op-count">03</div><div class="row"><span>ROUTE</span><b>192.0.2.44</b></div><div class="row"><span>SESSION KEY</span><b id="session-id">STL-———</b></div></section>
+      </aside>
+    </main>
+    <footer class="bottom"><span>STELLA / REMOTE DIAGNOSTICS</span><div class="progresswrap"><div class="progress"><i id="progress"></i></div><span id="progress-label">CONNECTING</span></div><button class="terminate" id="terminate">TERMINATE SESSION</button></footer>
+  </div>
+  <script>
+    // The console is a visual-only simulation. It makes no network requests and reads no device data.
+    const events = [
+      ['LINK', 'Remote endpoint response received', 'alert'],
+      ['CRYPTO', 'Negotiating encrypted control channel', ''],
+      ['CRYPTO', 'Session key exchange completed', 'good'],
+      ['ROUTE', 'Secure route resolved · 192.0.2.44', ''],
+      ['AUTH', 'Endpoint token accepted · restricted scope', 'alert'],
+      ['DISCOVERY', 'Enumerating exposed service signatures', ''],
+      ['DISCOVERY', '14 service responses captured', 'good'],
+      ['AUDIT', 'Mapping active permission boundaries', ''],
+      ['AUDIT', 'Session authority elevated · read-only', 'alert'],
+      ['INDEX', 'Remote profile index response received', ''],
+      ['INDEX', '3 metadata records queued for review', 'alert'],
+      ['STATUS', 'Persistent session channel remains active', 'alert'],
+    ];
+    const log = document.querySelector('#log');
+    const progress = document.querySelector('#progress');
+    const progressLabel = document.querySelector('#progress-label');
+    const seed = Math.random().toString(16).slice(2, 7).toUpperCase();
+    document.querySelector('#session-id').textContent = `STL-${seed}`;
+    let index = 0;
+    let timer;
+
+    function timestamp(){return new Date().toLocaleTimeString('en-GB',{hour12:false})+'.'+String(Math.floor(Math.random()*999)).padStart(3,'0')}
+    function appendEvent([tag,message,tone]){
+      const line=document.createElement('div');line.className=`line ${tone||''}`;
+      const time=document.createElement('span');time.className='time';time.textContent=timestamp();
+      const sig=document.createElement('span');sig.className='sig';sig.textContent='›';
+      const text=document.createElement('span');text.className='msg';text.textContent=`[${tag}] ${message}`;
+      line.append(time,sig,text);log.append(line);log.scrollTop=log.scrollHeight;
+    }
+    function nextEvent(){
+      if(index>=events.length){
+        document.querySelector('#session-status').textContent='SESSION ACTIVE';
+        document.querySelector('#auth').textContent='VERIFIED';
+        document.querySelector('#integrity').textContent='ACTIVE';
+        progressLabel.textContent='CHANNEL OPEN';
+        timer=window.setInterval(()=>appendEvent(['PING','Control channel heartbeat received','good']),2600);
+        return;
+      }
+      appendEvent(events[index]);
+      const percent=Math.round(((index+1)/events.length)*100);
+      progress.style.width=`${percent}%`;progressLabel.textContent=percent<100?'SURVEYING': 'CHANNEL OPEN';
+      document.querySelector('#meter').style.width=`${Math.min(100,22+percent)}%`;
+      document.querySelector('#op-count').textContent=String(Math.min(3+index,14)).padStart(2,'0');
+      if(index===4)document.querySelector('#auth').textContent='VALIDATING';
+      if(index>=7)document.querySelector('#integrity').textContent='SCOPE';
+      index+=1;timer=window.setTimeout(nextEvent,850+Math.random()*450);
+    }
+    timer=window.setTimeout(nextEvent,500);
+    document.querySelector('#terminate').addEventListener('click',()=>{
+      window.clearTimeout(timer);window.clearInterval(timer);
+      document.querySelector('#top-status').textContent='SESSION TERMINATED';
+      document.querySelector('#session-status').textContent='CHANNEL CLOSED';
+      document.querySelector('#channel').textContent='CLOSED';
+      document.querySelector('#auth').textContent='ENDED';
+      document.querySelector('#integrity').textContent='OFF';
+      progressLabel.textContent='CLOSED';progress.style.width='100%';
+      appendEvent(['CLOSE','Session terminated by operator','good']);
+      document.querySelector('#terminate').disabled=true;
+    });
+  </script>
+</body>
+</html>
